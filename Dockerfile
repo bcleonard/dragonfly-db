@@ -1,35 +1,24 @@
-FROM ubuntu:trusty
+FROM centos:7.1.1503
 MAINTAINER Bradley Leonard <bradley@stygianresearch.com>
 
-#
-# install all updates and software needed
-# 
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get -y update &&\
- apt-get -y install mysql-server &&\
- apt-get -y install wget &&\
- apt-get -y install unzip
+# install hostname, mariadb-server, mariadb, psmisc & wget
+RUN yum -y update\
+ && yum -y install --setopt=tsflags=nodocs hostname mariadb-server mariadb psmisc wget\
+ && yum clean all
 
 #
-# update bind-address
+# download the TESTDB.SQL code
 #
-RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
-
-#
-# download and unzip the dragonfly code
-#
-ENV URL=https://github.com/FlatBallFlyer/IBM-Data-Merge-Utility/archive/master.zip
+ENV URL=https://raw.githubusercontent.com/FlatBallFlyer/IBM-Data-Merge-Utility/master/idmu-war/src/main/resources/TESTDB.sql
 RUN cd /tmp &&\
-  wget $URL &&\
-  unzip master.zip &&\
-  rm /tmp/master.zip
+  wget $URL
 
 #
 # add the start up script
 # 
-ADD ./startup.sh /opt/startup.sh
+ADD ./docker-entrypoint.sh /opt/docker-entrypoint.sh
+
+ENTRYPOINT ["/opt/docker-entrypoint.sh"]
 
 EXPOSE 3306
-
-CMD ["/bin/bash", "/opt/startup.sh"]
-
+CMD ["mysqld_safe"]

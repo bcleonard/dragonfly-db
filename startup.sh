@@ -7,11 +7,11 @@ MYSQL_ROOTPASSWD=changeme
 #
 if [ ! -f /var/lib/mysql/ibdata1 ]
 then
-  mysql_install_db
+  /usr/bin/mysql_install_db
 
-  /usr/sbin/mysqld &
+  /usr/libexec/mysqld &
   sleep 10s
-  echo "GRANT ALL ON *.* TO admin@'%' IDENTIFIED BY '$MYSQL_ROOTPASSWD' WITH GRANT OPTION; FLUSH PRIVILEGES" | mysql
+  echo "GRANT ALL ON *.* TO admin@'%' IDENTIFIED BY '$MYSQL_ROOTPASSWD' WITH GRANT OPTION; FLUSH PRIVILEGES" | /usr/bin/mysql
 
   killall mysqld
   sleep 10s
@@ -23,10 +23,10 @@ fi
 if [ ! -f /var/lib/mysql/dragonfly ]
 then
 
-  /usr/sbin/mysqld &
+  /usr/libexec/mysqld &
   sleep 10s
 
-  mysql -u admin -p$MYSQL_ROOTPASSWD < /tmp/IBM-Data-Merge-Utility-master/WebContent/sql/createTemplateDatabase.sql
+  /usr/bin/mysql -u admin -p$MYSQL_ROOTPASSWD < /tmp/TESTDB.SQL
 
   killall mysqld
   sleep 10s
