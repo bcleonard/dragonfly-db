@@ -19,9 +19,9 @@ mysql --user=root --password=drawssap -h 127.0.0.1 -e 'use testgen;show tables;'
 ```
 from the container host.  You should see the following message:
 
-|Tables_in_testgen|
-|------------------|
-| CONTACT |
-| CORPORATE |
-| CUSTOMER |
+>|Tables_in_testgen|
+>|------------------|
+>| CONTACT |
+>| CORPORATE |
+>| CUSTOMER |
 
