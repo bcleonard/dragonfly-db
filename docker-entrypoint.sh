@@ -1,19 +1,18 @@
 #!/bin/bash -x
 set -e
 
-MYSQL_ROOT_PASSWORD="idrawssap"
-MYSQL_DATABASE="dragonfly"
-MYSQL_USER="dragonfly"
-MYSQL_PASSWORD="idrawssap"
-TEST_SQL="/tmp/TESTDB.SQL"
+#
+# preset variables for root password, database and for code to build the testgen database
+#
+MYSQL_ROOT_PASSWORD=drawssap
+MYSQL_DATABASE=testgen
+TESTDBSQL="/tmp/TESTDB.sql"
 
-if [ "${1:0:1}" = '-' ]
-then
-  set -- mysqld_safe "$@"
+if [ "${1:0:1}" = '-' ]; then
+	set -- mysqld_safe "$@"
 fi
 
-if [ "$1" = 'mysqld_safe' ]
-then
+if [ "$1" = 'mysqld_safe' ]; then
 	DATADIR="/var/lib/mysql"
 	
 	if [ ! -d "$DATADIR/mysql" ]; then
@@ -41,21 +40,18 @@ then
 		
 		if [ "$MYSQL_DATABASE" ]; then
 			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\` ;" >> "$tempSqlFile"
+#
+# cat the sql code to build the database on initial creation
+#
+                        cat ${TESTDBSQL} >> "$tempSqlFile"
 		fi
 		
-		if [ "$MYSQL_USER" -a "$MYSQL_PASSWORD" ]
-                then
-		  echo "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' ;" >> "$tempSqlFile"
+		if [ "$MYSQL_USER" -a "$MYSQL_PASSWORD" ]; then
+			echo "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' ;" >> "$tempSqlFile"
 			
-		  if [ "$MYSQL_DATABASE" ]
-                  then
-	   	    echo "GRANT ALL ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%' ;" >> "$tempSqlFile"
-
-                    if [ -f "${TEST_SQL}" ]
-                    then
-                      cat ${TEST_SQL} >> "$tempSqlFile"
-                    fi
-		  fi
+			if [ "$MYSQL_DATABASE" ]; then
+				echo "GRANT ALL ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%' ;" >> "$tempSqlFile"
+			fi
 		fi
 		
 		echo 'FLUSH PRIVILEGES ;' >> "$tempSqlFile"

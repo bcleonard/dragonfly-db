@@ -3,7 +3,7 @@ MAINTAINER Bradley Leonard <bradley@stygianresearch.com>
 
 # install hostname, mariadb-server, mariadb, psmisc & wget
 RUN yum -y update\
- && yum -y install --setopt=tsflags=nodocs hostname mariadb-server mariadb psmisc wget\
+ && yum -y install --setopt=tsflags=nodocs bind-utils hostname mariadb-server psmisc wget\
  && yum clean all
 
 #
