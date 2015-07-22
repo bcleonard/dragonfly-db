@@ -4,16 +4,19 @@ dragonfly-db the container of the dragonfly application's test database (IBM Dat
 
 ### Persistant database
 If you would like the database to be persistant, I recommend creating a local filesystem.  I used
+
 ```sh
 /data/dragonflydb
 ```
 for the instuctrions below.  Just make sure you create it prior to starting the container.
 
 ### To start the container:
+
 ```sh
-docker run -d -p 3306:3306 --name dragonfly-db -v /data/dragonflydb:/var/lib/mysql dragonfly-db
+docker run -d -p 3306:3306 --name dragonfly-db -v /data/dragonflydb:/var/lib/mysql bcleonard/dragonfly-db
 ```
 ### To verify the testgen database has the correct tables, run:
+
 ```sh
 mysql --user=root --password=drawssap -h 127.0.0.1 -e 'use testgen;show tables;'
 ```
